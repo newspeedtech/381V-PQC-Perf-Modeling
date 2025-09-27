@@ -1,0 +1,5 @@
+alg_family,param_set,operation,message_bytes,concurrency,cpu_ghz,aesni,avx2,neon,machine_id,os_name,containerized,latency_ms,throughput_ops,timestamp,notes,trial_id
+ML-KEM,768,encap,0,64,3.2,1,1,0,laptop01,ubuntu,0,12.7,7850,2025-08-01T10:15:32,first run,1
+ML-KEM,768,encap,0,64,3.2,1,1,0,laptop01,ubuntu,0,12.9,7802,2025-08-01T10:15:34,warm,2
+ML-DSA,87,sign,1024,32,3.2,1,1,0,laptop01,ubuntu,0,3.8,5200,2025-08-01T10:17:02,,3
+SPHINCS+,SHA-256-128f,sign,1024,32,3.2,1,1,0,laptop01,ubuntu,0,25.3,900,2025-08-01T10:20:10,,4
