@@ -72,6 +72,7 @@ def ensure_header(path):
             writer = csv.writer(f)
             writer.writerow(header)
 
+<<<<<<< HEAD
 def try_import_oqs():
     try:
         import oqs
@@ -82,6 +83,11 @@ def try_import_oqs():
 def synthetic_timing(alg, param_set, operation, message_bytes, concurrency):
     """Return (latency_ms, throughput_ops) as a quick placeholder.
     This is *not* real crypto - just a randomized function to let you test the pipeline.
+=======
+def synthetic_timing(alg, param_set, operation, message_bytes, concurrency):
+    """Return (latency_ms, throughput_ops) as a quick placeholder.
+    This is *not* real crypto — just a randomized function to let you test the pipeline.
+>>>>>>> 6755b76a1d5d63e5f0d7a89e5de5cda816dbf49d
     """
     base = {
         "ML-KEM": 10.0,
@@ -108,6 +114,7 @@ def synthetic_timing(alg, param_set, operation, message_bytes, concurrency):
     throughput_ops = max(1.0, 1000.0 / latency_ms * (1.0 + random.uniform(-0.05, 0.05)))
     return latency_ms, throughput_ops
 
+<<<<<<< HEAD
 def resolve_oqs_name(oqs, user_name: str, is_sig: bool):
     """
     Map a user-supplied algorithm string (e.g., 'ML-KEM-768', 'Kyber768',
@@ -197,13 +204,37 @@ def real_timing_bindings(alg, param_set, operation, message_bytes, concurrency, 
 
     latency_ms = (time.perf_counter() - start) * 1000.0
     throughput_ops = 1000.0 / latency_ms if latency_ms > 0 else 0.0
+=======
+def real_timing_bindings(alg,param_set,operation,message_bytes,concurrency,oqs):
+    is_sig=operation in ("sign","verify")
+    oqs_name=resolve_oqs_name(oqs, f"{alg}-{param_set}" if alg.startswith("ML-") and param_set else alg, is_sig)
+    if oqs_name is None: oqs_name=resolve_oqs_name(oqs, alg, is_sig)
+    if oqs_name is None: raise ValueError(f"Cannot resolve algorithm name '{alg} {param_set}'")
+    start=time.perf_counter()
+    if operation in ("keygen","encap","decap"):
+        with oqs.KeyEncapsulation(oqs_name) as kem:
+            if operation=="keygen": kem.generate_keypair()
+            elif operation=="encap": kem.generate_keypair(); kem.encap_secret()
+            else: kem.generate_keypair(); ct, _ = kem.encap_secret(); kem.decap_secret(ct)
+    elif operation in ("sign","verify"):
+        with oqs.Signature(oqs_name) as sig:
+            pk=sig.generate_keypair(); msg=b"x"*message_bytes
+            if operation=="sign": sig.sign(msg)
+            else: sig.verify(msg, sig.sign(msg), pk)
+    else: raise ValueError("Unknown operation: "+operation)
+    latency_ms=(time.perf_counter()-start)*1000.0
+    throughput_ops=1000.0/latency_ms if latency_ms>0 else 0.0
+>>>>>>> 6755b76a1d5d63e5f0d7a89e5de5cda816dbf49d
     return latency_ms, throughput_ops
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", type=str, required=True, help="Output CSV path (will be created if missing)")
+<<<<<<< HEAD
     parser.add_argument("--mode", default="auto", choices=["auto", "real", "synthetic"],
                         help="real = use oqs bindings, synthetic = no oqs, auto = detect if oqs installed")
+=======
+>>>>>>> 6755b76a1d5d63e5f0d7a89e5de5cda816dbf49d
     parser.add_argument("--algs", nargs="+", default=["ML-KEM","ML-DSA","SPHINCS+"], help="Algorithm families")
     parser.add_argument("--params", nargs="+", default=["512","768","1024"], help="Parameter sets per algorithm")
     parser.add_argument("--ops", nargs="+", default=["keygen","encap","decap","sign","verify"], help="Operations")
@@ -228,8 +259,12 @@ def main():
                         for conc in args.concurrency:
                             # Warm-up discard pattern (synthetic): call once and ignore
                             # _ = synthetic_timing(alg, param, op, size, conc)
+<<<<<<< HEAD
                             try:
                                 _ = real_timing_bindings(alg,param,op,size,conc,oqs_module) if use_real else synthetic_timing(alg,param,op,size,conc)
+=======
+                            _ = real_timing_bindings(alg,param,op,size,conc,oqs_module) if use_real else synthetic_timing(alg,param,op,size,conc)
+>>>>>>> 6755b76a1d5d63e5f0d7a89e5de5cda816dbf49d
                             except Exception: _ = synthetic_timing(alg,param,op,size,conc);
                             for r in range(args.repeats):
                                 trial_id += 1
