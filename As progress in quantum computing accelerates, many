@@ -1,0 +1,52 @@
+As progress in quantum computing accelerates, many organizations will soon need to migrate from classical public-key cryptography to post-quantum cryptography (PQC) to remain secure against future attacks. While security requirements are driving this transition, performance remains a practical concern: PQC schemes often use larger keys and more complex operations than today’s algorithms, and it is not yet clear how much overhead they introduce in real systems. For system designers and engineers, even modest increases in cryptographic latency can affect throughput, user-visible response times, and the scalability of deployed services.
+
+The core problem this project addresses is the lack of simple, predictive models for PQC performance under realistic operating conditions. Existing benchmark studies report raw timing measurements for individual algorithms and implementations, but they typically present results as tables or plots tied to specific experimental setups. This makes it difficult for practitioners to answer questions such as: How much slower will algorithm A be than algorithm B for my typical message sizes? or What latency should I expect in the median case versus the worst case? In particular, there is limited work on modeling PQC latency as a function of algorithm type, operation type, and input characteristics, or on estimating not just average behavior but upper-percentile delays that drive capacity planning.
+
+This paper tackles that problem by taking a deliberately simple, exploratory modeling approach to post-quantum cryptography latency under realistic operating conditions. Using timing measurements from representative PQC implementations and benchmark-style workloads, the study conducts a first-pass investigation of how algorithm choice, operation type, and basic input characteristics relate to end-to-end latency. Rather than aiming for highly optimized, production-ready performance models, the analysis uses straightforward regression-based techniques and basic data exploration to see how far naive models can go in explaining typical (median) and upper-percentile delays and in highlighting the most influential factors.
+
+The objective of this paper is therefore to develop and evaluate simple, interpretable predictive models that estimate the latency of key post-quantum cryptographic operations across different algorithms and use cases. The resulting preliminary predictions and factor-importance insights are intended less as definitive performance guarantees and more as an accessible first step that can help practitioners planning PQC migrations anticipate performance trade-offs and make more informed choices about algorithm selection and system design.
+
+
+
+
+
+As quantum computing continues to advance, many organizations will need to move from classical public-key cryptography to post-quantum cryptography (PQC) to stay secure against future attacks. Security concerns are pushing this change, but performance is still a practical issue. PQC schemes often use larger keys and more complex operations than today’s algorithms, and it is not yet clear how much extra delay they introduce in real systems. For system designers and engineers, even small increases in cryptographic latency can affect throughput, user response times, and how well services scale.
+
+This project focuses on the lack of simple ways to predict PQC performance under realistic conditions. Existing benchmark studies usually report raw timing measurements for individual algorithms and implementations, often as tables or plots tied to one specific test setup. This makes it hard for practitioners to answer questions like: How much slower will algorithm A be than algorithm B for my typical message sizes? or What latency should I expect in the median case versus the worst case? There is especially little work on modeling PQC latency as a function of algorithm type, operation type, and input size, or on estimating not just average behavior but higher delays that matter for system capacity planning.
+
+This paper tackles that problem with a simple, exploratory modeling approach to PQC latency. Using timing measurements from representative PQC implementations and benchmark-style workloads, the study takes a first look at how algorithm choice, operation type, and basic input characteristics relate to end-to-end latency. Instead of trying to build highly tuned, production-ready performance models, the analysis uses straightforward regression-style techniques and basic data exploration to see how far simple baseline models can go in explaining typical (median) and higher-percentile delays and in pointing to the most important factors.
+
+The goal of this paper is to build and test simple, easy-to-interpret models that estimate the latency of key post-quantum cryptographic operations across different algorithms and use cases. The results are meant as a starting point rather than final performance guarantees. They are intended to give practitioners planning PQC migrations an early sense of likely performance trade-offs and to support more informed choices about algorithm selection and system design.
+
+https://csrc.nist.gov/csrc/media/Events/2022/fourth-pqc-standardization-conference/documents/papers/benchmarking-and-analysiing-nist-pqc-lattice-based-pqc2022.pdf
+
+https://arxiv.org/html/2503.12952v1
+
+https://postquantum.com/quantum-research/new-pqc-performance/
+
+
+Abbasi et al., 2025 – “A Practical Performance Benchmark of Post-Quantum Cryptography Across Heterogeneous Computing Environments” (Cryptography)
+They present cross-platform benchmarks of Kyber, NTRU, BIKE, Dilithium, Falcon, etc., and report raw operation times (in ms) as tables for particular hardware environments (Server E1, Laptop E2, Device E3). See Tables 3–5: “Raw operation times (ms) at NIST Security Levels 1, 3, and 5.” 
+MDPI
+Tzinos et al., 2022 – “Evaluating the performance of post-quantum secure algorithms in the TLS protocol” (JSSS)
+Their “third experiment: raw performance” uses liboqs’ speed_kem and reports mean execution times for keygen, encaps, and decaps (in ms) for McEliece, Kyber, NTRU, Saber variants on two specific CPUs, in Tables 2–5. 
+OAE Publishing
+Sikeridis et al., 2020 – “Post-Quantum Authentication in TLS 1.3: A Performance Study” (NDSS)
+They integrate PQ signatures into TLS 1.3 and then give tables of mean and standard deviation of sign/verify times (in ms) on a local machine and cloud instances (Table II), plus handshake latency CDF plots for a particular client–server setup. 
+NDSS Symposium
+Kannwischer et al., 2024 – “pqm4: Benchmarking NIST Additional Post-Quantum Signature Schemes on Microcontrollers”
+This work benchmarks many PQ signature implementations on a specific Cortex-M4 board and reports execution speed in CPU cycles for key generation, signing, and verification in large tables (Table 2, etc.), tied to that microcontroller platform and toolchain. 
+NIST Comput
+
+
+similar work:
+
+https://www.mdpi.com/2410-387X/9/2/32
+
+https://www.researchgate.net/publication/391561564_Predictive_Analysis_of_Quantum-Resistant_Algorithms_Using_Machine_Learning_Approaches
+
+https://d197for5662m48.cloudfront.net/documents/publicationstatus/253865/preprint_pdf/4bfe82d049e0600ad5b64b71aa7c1861.pdf?utm_source=chatgpt.com
+
+https://cianaatech.com/machine-learning-enhanced-quantum-safe-encryption-a-systematic-literature-review-and-novel-optimization-framework/?utm_source=chatgpt.comRF train  → MAE=0.0135 | RMSE=0.0561
+RF test   → MAE=0.5901 | RMSE=0.7917
+Baseline  → MAE=1.5296 | RMSE=1.9576
