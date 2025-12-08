@@ -2,7 +2,6 @@
 #!/usr/bin/env python3
 """
 pqc_benchmark_harness.py
-Beginner-friendly harness that logs benchmark results to a CSV compatible with the analysis notebook.
 
 USAGE (synthetic data for a dry run):
   python pqc_benchmark_harness.py --out /path/to/pqc_perf_data.csv \
@@ -12,8 +11,6 @@ USAGE (synthetic data for a dry run):
       --concurrency 1 16 64 256 \
       --message-bytes 0 1024 \
       --repeats 5
-
-Later, replace the synthetic_timing() function with real measurements from your PQC library.
 """
 
 import argparse
@@ -29,13 +26,8 @@ import traceback
 def _detect_accel_flags():
     """
     Detect AESNI, AVX2, NEON as best we can from the OS.
-
-    Priority:
-      1. Respect explicit env vars AESNI/AVX2/NEON if set.
-      2. Otherwise, try to infer from CPU flags on macOS/Linux.
-      3. Fallback to 0 if unsure.
     """
-    # 1) Env overrides (if you set AESNI=1 etc., we trust that)
+    # Env overrides
     aesni_env = os.environ.get("AESNI")
     avx2_env  = os.environ.get("AVX2")
     neon_env  = os.environ.get("NEON")
@@ -46,7 +38,7 @@ def _detect_accel_flags():
 
     system = platform.system()
 
-    # 2) Auto-detect if not set by env
+    # Auto-detect if not set by env
     try:
         if system == "Darwin":
             # macOS: use sysctl output
@@ -87,7 +79,7 @@ def _detect_accel_flags():
         # If detection fails for any reason, we'll just fill defaults below
         pass
 
-    # 3) Fill any remaining Nones with 0
+    # Fill any remaining Nones with 0
     if aesni is None:
         aesni = 0
     if avx2 is None:
@@ -170,10 +162,6 @@ def resolve_oqs_name(oqs, user_name: str, is_sig: bool):
     Map a user-supplied algorithm string (e.g., 'ML-KEM-768', 'Kyber768',
     'Dilithium3', 'Classic-McEliece-6688128') to an oqs mechanism name
     available in THIS build.
-
-    Works with liboqs-python API variants that expose:
-        - get_enabled_kem_mechanisms()
-        - get_enabled_sig_mechanisms()
     """
     # Pull available mechanisms for this build
     avail = (oqs.get_enabled_sig_mechanisms() if is_sig
